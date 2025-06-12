@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: whistle-blowing
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn mysite_core.wsgi:application
+    envVars:
+      - key: DJANGO_SECRET_KEY
+        value: django-insecure-03_f8*f5c-78fbcdjiw60i33p(!7*7z$@1*bqx19u+)q3au7q$
+      - key: DJANGO_DEBUG
+        value: "False"
