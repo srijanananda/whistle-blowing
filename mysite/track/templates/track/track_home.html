@@ -1,0 +1,13 @@
+
+{% extends "base_public.html" %}
+
+{% block title %}Track Your Complaint{% endblock %}
+
+{% block content %}
+<h2>Track Your Complaint</h2>
+<form method="get" action="{% url 'track_complaint' %}">
+    <label for="code">Enter Tracking Code:</label>
+    <input type="text" name="code" required>
+    <button type="submit">Track</button>
+</form>
+{% endblock %}

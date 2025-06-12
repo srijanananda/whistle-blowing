@@ -1,0 +1,555 @@
+{% extends "base_public.html" %}
+
+{% block title %}Track Your Complaint{% endblock %}
+
+{% block breadcrumb %}
+<span><i class="fas fa-chevron-right"></i></span>
+<span>Track Complaint</span>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1><i class="fas fa-search"></i> Track Your Complaint</h1>
+    <p class="page-description">Enter your tracking code to check the status of your complaint</p>
+</div>
+
+<div class="track-form-container">
+    <div class="form-header">
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i>
+            <div>
+                <strong>Secure Tracking</strong>
+                <p>Your tracking code was provided when you submitted your complaint. Keep it confidential.</p>
+            </div>
+        </div>
+    </div>
+
+    <form method="GET" class="track-form" id="trackForm">
+        <div class="form-content">
+            <div class="form-group">
+                <label for="code" class="form-label">
+                    <i class="fas fa-key"></i> Enter your tracking code:
+                </label>
+                <input type="text" name="code" id="code" value="{{ code|default:'' }}" required 
+                       placeholder="Enter your tracking code..." class="tracking-input">
+            </div>
+        </div>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary btn-lg" id="trackBtn">
+                <i class="fas fa-search"></i> Track Complaint
+            </button>
+        </div>
+    </form>
+</div>
+
+{% if code %}
+    <div class="results-container">
+        {% if complaint %}
+            <div class="complaint-details">
+                <div class="status-header">
+                    <h2><i class="fas fa-clipboard-check"></i> Complaint Details</h2>
+                    <div class="status-badge status-{{ complaint.status|lower }}">
+                        <i class="fas fa-circle"></i>
+                        <span>{{ complaint.get_status_display }}</span>
+                    </div>
+                </div>
+
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <div class="detail-label">
+                            <i class="fas fa-tag"></i> Title
+                        </div>
+                        <div class="detail-value">{{ complaint.title }}</div>
+                    </div>
+
+                    <div class="detail-item">
+                        <div class="detail-label">
+                            <i class="fas fa-file-alt"></i> Description
+                        </div>
+                        <div class="detail-value">{{ complaint.description }}</div>
+                    </div>
+
+                    <div class="detail-item">
+                        <div class="detail-label">
+                            <i class="fas fa-calendar"></i> Date of Incident
+                        </div>
+                        <div class="detail-value">{{ complaint.date_of_incident }}</div>
+                    </div>
+
+                    {% if complaint.photo %}
+                        <div class="detail-item full-width">
+                            <div class="detail-label">
+                                <i class="fas fa-image"></i> Photo
+                            </div>
+                            <div class="detail-value">
+                                <div class="photo-container">
+                                    <img src="{{ complaint.photo.url }}" alt="Complaint Photo" class="complaint-photo" 
+                                         onclick="openPhotoModal(this.src)">
+                                    <div class="photo-overlay">
+                                        <i class="fas fa-expand"></i> Click to enlarge
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        {% else %}
+            <div class="error-container">
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <div>
+                        <strong>No complaint found</strong>
+                        <p>No complaint was found with this tracking code. Please check your code and try again.</p>
+                    </div>
+                </div>
+                <div class="help-section">
+                    <h3><i class="fas fa-question-circle"></i> Need Help?</h3>
+                    <ul>
+                        <li>Make sure you've entered the complete tracking code</li>
+                        <li>Tracking codes are case-sensitive</li>
+                        <li>Check for any extra spaces at the beginning or end</li>
+                        <li>If you continue to have issues, contact support</li>
+                    </ul>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+{% endif %}
+
+<!-- Photo Modal -->
+<div id="photoModal" class="photo-modal" onclick="closePhotoModal()">
+    <div class="photo-modal-content">
+        <span class="photo-close">&times;</span>
+        <img id="modalPhoto" src="" alt="Enlarged Photo">
+    </div>
+</div>
+
+<style>
+.page-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.page-header h1 {
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.page-description {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.track-form-container {
+    max-width: 600px;
+    margin: 0 auto 3rem;
+}
+
+.form-header {
+    margin-bottom: 2rem;
+}
+
+.track-form {
+    background: var(--white);
+    border-radius: 12px;
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+}
+
+.form-content {
+    padding: 2rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    display: block;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.tracking-input {
+    width: 100%;
+    padding: 1rem 1.25rem;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-family: 'Courier New', monospace;
+    text-align: center;
+    letter-spacing: 1px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    background: var(--white);
+}
+
+.tracking-input:focus {
+    outline: none;
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.form-actions {
+    padding: 2rem;
+    background: var(--light-bg);
+    text-align: center;
+}
+
+.results-container {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.complaint-details {
+    background: var(--white);
+    border-radius: 12px;
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.status-header {
+    padding: 2rem;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    color: var(--white);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.status-header h2 {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.status-badge {
+    padding: 0.75rem 1.5rem;
+    border-radius: 25px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-pending {
+    background: var(--warning-color);
+    color: var(--white);
+}
+
+.status-in_progress,
+.status-investigating {
+    background: var(--secondary-color);
+    color: var(--white);
+}
+
+.status-resolved,
+.status-completed {
+    background: var(--success-color);
+    color: var(--white);
+}
+
+.status-closed {
+    background: var(--text-secondary);
+    color: var(--white);
+}
+
+.detail-grid {
+    padding: 2rem;
+    display: grid;
+    gap: 2rem;
+}
+
+.detail-item {
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 1.5rem;
+}
+
+.detail-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.detail-item.full-width {
+    grid-column: 1 / -1;
+}
+
+.detail-label {
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+}
+
+.detail-value {
+    color: var(--text-primary);
+    line-height: 1.6;
+    font-size: 1rem;
+}
+
+.photo-container {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    transition: transform 0.3s ease;
+}
+
+.photo-container:hover {
+    transform: scale(1.02);
+}
+
+.complaint-photo {
+    width: 200px;
+    height: auto;
+    display: block;
+    border-radius: 8px;
+}
+
+.photo-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    font-size: 0.9rem;
+}
+
+.photo-container:hover .photo-overlay {
+    opacity: 1;
+}
+
+.error-container {
+    background: var(--white);
+    border-radius: 12px;
+    box-shadow: var(--shadow-lg);
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+.help-section {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.help-section h3 {
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.help-section ul {
+    list-style: none;
+    padding: 0;
+}
+
+.help-section li {
+    padding: 0.5rem 0;
+    color: var(--text-secondary);
+    position: relative;
+    padding-left: 1.5rem;
+}
+
+.help-section li::before {
+    content: "•";
+    color: var(--secondary-color);
+    position: absolute;
+    left: 0;
+    font-weight: bold;
+}
+
+/* Photo Modal */
+.photo-modal {
+    display: none;
+    position: fixed;
+    z-index: 10000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    animation: fadeIn 0.3s ease;
+}
+
+.photo-modal-content {
+    margin: auto;
+    display: block;
+    width: 80%;
+    max-width: 800px;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+    animation: slideIn 0.3s ease;
+}
+
+.photo-modal-content img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+.photo-close {
+    position: absolute;
+    top: -40px;
+    right: 0;
+    color: var(--white);
+    font-size: 2rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.photo-close:hover {
+    color: var(--secondary-color);
+}
+
+/* Loading state for track button */
+.btn.loading {
+    position: relative;
+    color: transparent;
+}
+
+.btn.loading::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: 50%;
+    left: 50%;
+    margin-left: -10px;
+    margin-top: -10px;
+    border: 2px solid transparent;
+    border-top-color: currentColor;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideIn {
+    from { transform: translateY(-100px); opacity: 0; }
+    to { transform: translateY(-50%); opacity: 1; }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .page-header h1 {
+        font-size: 2rem;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .form-content {
+        padding: 1.5rem;
+    }
+    
+    .status-header {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .detail-grid {
+        padding: 1.5rem;
+    }
+    
+    .complaint-photo {
+        width: 150px;
+    }
+    
+    .photo-modal-content {
+        width: 95%;
+        margin: 1rem;
+    }
+    
+    .photo-close {
+        top: -30px;
+        font-size: 1.5rem;
+    }
+}
+</style>
+
+<script>
+// Form submission handling
+document.getElementById('trackForm').addEventListener('submit', function(e) {
+    const trackBtn = document.getElementById('trackBtn');
+    const code = document.getElementById('code').value.trim();
+    
+    if (code) {
+        trackBtn.classList.add('loading');
+        trackBtn.disabled = true;
+    }
+});
+
+// Photo modal functions
+function openPhotoModal(src) {
+    const modal = document.getElementById('photoModal');
+    const modalImg = document.getElementById('modalPhoto');
+    modal.style.display = 'block';
+    modalImg.src = src;
+}
+
+function closePhotoModal() {
+    document.getElementById('photoModal').style.display = 'none';
+}
+
+// Close modal on escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closePhotoModal();
+    }
+});
+
+// Input validation and formatting
+document.getElementById('code').addEventListener('input', function(e) {
+    // Remove any non-alphanumeric characters and convert to uppercase
+    this.value = this.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+});
+
+// Focus on input when page loads
+window.addEventListener('load', function() {
+    document.getElementById('code').focus();
+});
+</script>
+{% endblock %}

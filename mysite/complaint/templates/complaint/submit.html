@@ -1,0 +1,385 @@
+{% extends "base_public.html" %}
+
+{% block title %}Submit a Complaint{% endblock %}
+
+{% block breadcrumb %}
+<span><i class="fas fa-chevron-right"></i></span>
+<span>Submit Complaint</span>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1><i class="fas fa-file-alt"></i> Submit a Complaint</h1>
+    <p class="page-description">Report misconduct, fraud, or violations securely and confidentially</p>
+</div>
+
+{% if success %}
+    <div class="modal-overlay" id="successModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <i class="fas fa-check-circle success-icon"></i>
+                <h2>Complaint Submitted Successfully!</h2>
+            </div>
+            <div class="modal-body">
+                <p><strong>Your tracking code is:</strong></p>
+                <div class="tracking-code">{{ tracking_code }}</div>
+                <p class="tracking-note">
+                    <i class="fas fa-info-circle"></i>
+                    Please save this tracking code to check the status of your complaint later.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button onclick="closeModal()" class="btn btn-primary">
+                    <i class="fas fa-home"></i> Return to Home
+                </button>
+            </div>
+        </div>
+    </div>
+{% endif %}
+
+<div class="complaint-form-container">
+    <div class="form-header">
+        <div class="alert alert-info">
+            <i class="fas fa-user-secret"></i>
+            <div>
+                <strong>Anonymous & Confidential</strong>
+                <p>Your identity is protected. All submissions are encrypted and handled securely according to whistleblower protection laws.</p>
+            </div>
+        </div>
+    </div>
+
+    <form method="POST" enctype="multipart/form-data" class="complaint-form" id="complaintForm">
+        {% csrf_token %}
+        <div class="form-content">
+            {{ form.as_p }}
+        </div>
+        <div class="form-actions">
+            <button type="button" onclick="window.history.back()" class="btn btn-outline">
+                <i class="fas fa-arrow-left"></i> Back
+            </button>
+            <button type="submit" class="btn btn-primary btn-lg" id="submitBtn">
+                <i class="fas fa-paper-plane"></i> Submit Complaint
+            </button>
+        </div>
+    </form>
+</div>
+
+<style>
+.page-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.page-header h1 {
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.page-description {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.complaint-form-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.form-header {
+    margin-bottom: 2rem;
+}
+
+.complaint-form {
+    background: var(--white);
+    border-radius: 12px;
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+}
+
+.form-content {
+    padding: 2rem;
+}
+
+/* Style Django form fields */
+.form-content p {
+    margin-bottom: 1.5rem;
+}
+
+.form-content label {
+    display: block;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+}
+
+.form-content input,
+.form-content select,
+.form-content textarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 1rem;
+    font-family: inherit;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    background: var(--white);
+    margin-top: 0.25rem;
+}
+
+.form-content input:focus,
+.form-content select:focus,
+.form-content textarea:focus {
+    outline: none;
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.form-content textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.form-content input[type="checkbox"] {
+    width: auto;
+    margin-right: 0.5rem;
+    margin-top: 0;
+}
+
+.form-content input[type="file"] {
+    padding: 0.5rem;
+    border-style: dashed;
+}
+
+/* Style help text */
+.form-content .helptext {
+    display: block;
+    margin-top: 0.5rem;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+/* Style error messages */
+.form-content .errorlist {
+    list-style: none;
+    margin: 0.5rem 0 0 0;
+    padding: 0;
+}
+
+.form-content .errorlist li {
+    color: var(--accent-color);
+    font-size: 0.9rem;
+    margin-bottom: 0.25rem;
+}
+
+.form-content .errorlist li::before {
+    content: "⚠ ";
+    margin-right: 0.25rem;
+}
+
+.form-actions {
+    padding: 2rem;
+    background: var(--light-bg);
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+/* Modal Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    animation: fadeIn 0.3s ease;
+}
+
+.modal-content {
+    background: var(--white);
+    border-radius: 16px;
+    box-shadow: var(--shadow-lg);
+    max-width: 500px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: slideIn 0.3s ease;
+}
+
+.modal-header {
+    padding: 2rem 2rem 1rem;
+    text-align: center;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.success-icon {
+    font-size: 4rem;
+    color: var(--success-color);
+    margin-bottom: 1rem;
+}
+
+.modal-header h2 {
+    color: var(--primary-color);
+    margin: 0;
+}
+
+.modal-body {
+    padding: 2rem;
+    text-align: center;
+}
+
+.tracking-code {
+    background: var(--light-bg);
+    border: 2px solid var(--success-color);
+    border-radius: 8px;
+    padding: 1rem;
+    font-family: 'Courier New', monospace;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--primary-color);
+    margin: 1rem 0;
+    letter-spacing: 2px;
+}
+
+.tracking-note {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-top: 1rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    text-align: left;
+}
+
+.modal-footer {
+    padding: 1rem 2rem 2rem;
+    text-align: center;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideIn {
+    from { transform: translateY(-50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .page-header h1 {
+        font-size: 2rem;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .form-content {
+        padding: 1.5rem;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .form-actions .btn {
+        width: 100%;
+    }
+    
+    .modal-content {
+        width: 95%;
+        margin: 1rem;
+    }
+    
+    .modal-header,
+    .modal-body,
+    .modal-footer {
+        padding: 1.5rem;
+    }
+}
+
+/* Loading state for submit button */
+.btn.loading {
+    position: relative;
+    color: transparent;
+}
+
+.btn.loading::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: 50%;
+    left: 50%;
+    margin-left: -10px;
+    margin-top: -10px;
+    border: 2px solid transparent;
+    border-top-color: currentColor;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+</style>
+
+<script>
+// Form submission handling
+document.getElementById('complaintForm').addEventListener('submit', function(e) {
+    const submitBtn = document.getElementById('submitBtn');
+    submitBtn.classList.add('loading');
+    submitBtn.disabled = true;
+});
+
+// Modal handling for success message
+function closeModal() {
+    document.getElementById('successModal').style.display = 'none';
+    window.location.href = "{% url 'home' %}";
+}
+
+// Close modal on clicking outside
+{% if success %}
+document.getElementById('successModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeModal();
+    }
+});
+
+// Close modal on escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeModal();
+    }
+});
+{% endif %}
+
+// Form validation feedback
+document.querySelectorAll('input, select, textarea').forEach(function(element) {
+    element.addEventListener('blur', function() {
+        if (this.hasAttribute('required') && !this.value.trim()) {
+            this.style.borderColor = 'var(--accent-color)';
+        } else if (this.value.trim()) {
+            this.style.borderColor = 'var(--success-color)';
+        } else {
+            this.style.borderColor = 'var(--border-color)';
+        }
+    });
+});
+</script>
+{% endblock %}

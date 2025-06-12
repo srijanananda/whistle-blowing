@@ -1,0 +1,365 @@
+{% extends "base_public.html" %}
+
+{% block title %}Home - Official Whistleblowing Portal{% endblock %}
+
+{% block breadcrumb %}
+<i class="fas fa-chevron-right"></i>
+<span>Portal Home</span>
+{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+    <div class="hero-content">
+        <h1 class="hero-title">
+            <i class="fas fa-shield-alt"></i>
+            Secure Whistleblowing Portal
+        </h1>
+        <p class="hero-subtitle">
+            Submit your complaint anonymously and get a secret tracking code. <span class="highlight-text">You can even complain about me—or say I've been selected! </span>🥺 😁 😉
+        </p>
+    </div>
+</div>
+
+<div class="services-grid">
+    <div class="service-card primary-card">
+        <div class="service-icon">
+            <i class="fas fa-file-alt"></i>
+        </div>
+        <div class="service-content">
+            <h3>Submit a Complaint</h3>
+            <p>Report misconduct, fraud, or violations securely and confidentially. Get an anonymous tracking code instantly.</p>
+            <a href="{% url 'submit_complaint' %}" class="btn btn-primary btn-lg">
+                <i class="fas fa-plus-circle"></i>
+                File Report
+            </a>
+        </div>
+    </div>
+
+    <div class="service-card secondary-card">
+        <div class="service-icon">
+            <i class="fas fa-search"></i>
+        </div>
+        <div class="service-content">
+            <h3>Track Your Report</h3>
+            <p>Check the status of your submitted complaint using your secure tracking code. Stay updated on progress.</p>
+            <a href="{% url 'track_home' %}" class="btn btn-secondary btn-lg">
+                <i class="fas fa-clipboard-list"></i>
+                Track Status
+            </a>
+        </div>
+    </div>
+
+    <div class="service-card admin-card">
+        <div class="service-icon">
+            <i class="fas fa-user-shield"></i>
+        </div>
+        <div class="service-content">
+            <h3>Administrative Access</h3>
+            <p>Authorized personnel login to manage complaints, review submissions, and maintain system security.</p>
+            <a href="{% url 'admin_login' %}" class="btn btn-outline btn-lg">
+                <i class="fas fa-sign-in-alt"></i>
+                Admin Portal
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="features-section">
+    <h2 class="section-title">Why Use This Portal?</h2>
+    <div class="features-grid">
+        <div class="feature-item">
+            <div class="feature-icon">
+                <i class="fas fa-lock"></i>
+            </div>
+            <h4>100% Confidential</h4>
+            <p>Your identity is protected by law. Submit reports anonymously with complete peace of mind.</p>
+        </div>
+        
+        <div class="feature-item">
+            <div class="feature-icon">
+                <i class="fas fa-shield-virus"></i>
+            </div>
+            <h4>Secure Platform</h4>
+            <p>End-to-end encryption and secure data handling ensure your information stays safe.</p>
+        </div>
+        
+        <div class="feature-item">
+            <div class="feature-icon">
+                <i class="fas fa-clock"></i>
+            </div>
+            <h4>Real-time Tracking</h4>
+            <p>Monitor your complaint status and receive updates throughout the investigation process.</p>
+        </div>
+        
+        <div class="feature-item">
+            <div class="feature-icon">
+                <i class="fas fa-balance-scale"></i>
+            </div>
+            <h4>Legal Protection</h4>
+            <p>Whistleblower protection laws safeguard you from retaliation and ensure fair treatment.</p>
+        </div>
+    </div>
+</div>
+
+<style>
+.hero-section {
+    text-align: center;
+    padding: 3rem 0;
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    border-radius: 16px;
+    margin-bottom: 3rem;
+    border: 1px solid #e2e8f0;
+}
+
+.hero-content {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.hero-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.hero-subtitle {
+    font-size: 1.25rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin: 0;
+}
+
+.highlight-text {
+    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 600;
+    animation: pulse-glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes pulse-glow {
+    0% {
+        filter: brightness(1);
+        transform: scale(1);
+    }
+    100% {
+        filter: brightness(1.1);
+        transform: scale(1.02);
+    }
+}
+
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin-bottom: 4rem;
+}
+
+.service-card {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    border: 2px solid transparent;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.service-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.service-card:hover::before {
+    transform: scaleX(1);
+}
+
+.service-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+    border-color: var(--secondary-color);
+}
+
+.primary-card:hover {
+    border-color: var(--primary-color);
+}
+
+.secondary-card:hover {
+    border-color: var(--secondary-color);
+}
+
+.admin-card:hover {
+    border-color: var(--text-secondary);
+}
+
+.service-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    color: var(--white);
+    font-size: 2rem;
+}
+
+.service-content h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+}
+
+.service-content p {
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 2rem;
+}
+
+.section-title {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 3rem;
+    position: relative;
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    border-radius: 2px;
+}
+
+.features-section {
+    background: var(--white);
+    padding: 3rem;
+    border-radius: 16px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+}
+
+.feature-item {
+    text-align: center;
+    padding: 1.5rem;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.feature-item:hover {
+    background: var(--light-bg);
+    transform: translateY(-4px);
+}
+
+.feature-icon {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, var(--success-color), #10b981);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    color: var(--white);
+    font-size: 1.5rem;
+}
+
+.feature-item h4 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.75rem;
+}
+
+.feature-item p {
+    color: var(--text-secondary);
+    line-height: 1.6;
+    font-size: 0.95rem;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .services-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2rem;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 1.1rem;
+    }
+    
+    .highlight-text {
+        display: inline-block;
+        margin-top: 0.5rem;
+    }
+    
+    .service-card {
+        padding: 1.5rem;
+    }
+    
+    .features-section {
+        padding: 2rem 1.5rem;
+    }
+    
+    .features-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+}
+
+/* Animation for cards */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.service-card {
+    animation: fadeInUp 0.6s ease-out forwards;
+}
+
+.service-card:nth-child(1) { animation-delay: 0.1s; }
+.service-card:nth-child(2) { animation-delay: 0.2s; }
+.service-card:nth-child(3) { animation-delay: 0.3s; }
+</style>
+{% endblock %}
