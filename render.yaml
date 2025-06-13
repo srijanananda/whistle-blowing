@@ -9,3 +9,8 @@ services:
         value: django-insecure-03_f8*f5c-78fbcdjiw60i33p(!7*7z$@1*bqx19u+)q3au7q$
       - key: DJANGO_DEBUG
         value: "False"
+buildCommand: |
+  pip install -r requirements.txt
+  python manage.py collectstatic --no-input
+  python manage.py migrate
+  python manage.py create_admin
